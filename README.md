@@ -31,7 +31,7 @@ AWS_SNS_DEFAULT_REGION=eu-west-1
 
 The way this library is designed, define SNS topics based on three parts.
 
- << image here >>
+![ARN topic parts](https://raw.githubusercontent.com/ralbear/laravel-events-to-sns/docs/media/arn_topic_parts.png)
  
  - A: Use the env variable:
 ```
