@@ -88,6 +88,13 @@ class OrderCreatedEvent implements ShouldBeInSns
 }
 ```
 
+## Test
+
+To run test:
+```
+$ composer test
+```
+
 ## License
 
 Laravel events to SNS is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
