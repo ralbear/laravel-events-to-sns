@@ -1,7 +1,7 @@
 
-## About Laravel events to SNS
+## Laravel events to SNS
 
-This library allow us to send directly Laravel events to a SNS queue.
+This library allow us to send Laravel events to an SNS topic.
 
 ## Install
 
@@ -19,7 +19,7 @@ AWS_ACCESS_KEY_ID=<MAIN ACCESS KEY ID>
 AWS_SECRET_ACCESS_KEY=<SECRECT ACCESS KEY>
 AWS_DEFAULT_REGION=us-west-1
 ```
-If we need specific credentials for SNS, just use this env keys:
+If we need specific credentials for SNS, use this env keys:
 
 ```
 AWS_SNS_ACCESS_KEY_ID=<SNS ACCESS KEY ID>
@@ -31,6 +31,8 @@ AWS_SNS_DEFAULT_REGION=eu-west-1
 
 The way this library is designed, define SNS topics based on three parts.
 
+ << image here >>
+ 
  - A: Use the env variable:
 ```
 AWS_SNS_BASE_ARN=arn:aws:sns:eu-west-1:123456789
