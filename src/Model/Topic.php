@@ -6,7 +6,6 @@ declare(strict_types=1);
 namespace Ralbear\EventsToSns\Model;
 
 
-use Illuminate\Support\Facades\Config;
 use Ralbear\EventsToSns\Exceptions\InvalidTopicFormatException;
 use Ralbear\EventsToSns\Exceptions\TopicNotAllowedException;
 
@@ -16,32 +15,65 @@ class Topic
 
     public const VALIDATION_REGEX = '/[^A-Za-z0-9-_]/';
 
-    protected string $topic;
+    protected $topic;
 
-    public function setTopic(string $topic): void
+    /**
+     * @param $topic
+     * @throws InvalidTopicFormatException
+     * @throws TopicNotAllowedException
+     */
+    public function __construct($topic)
+    {
+        $this->setTopic($topic);
+    }
+
+    /**
+     * @param string $topic
+     * @return void
+     * @throws TopicNotAllowedException
+     * @throws InvalidTopicFormatException
+     */
+    public function setTopic(string $topic)
     {
         $this->validateTopic($topic);
 
         $this->topic = $topic;
     }
 
-    public function getTopic(): string
+    /**
+     * @return string
+     */
+    public function getTopic()
     {
         return $this->topic;
     }
 
-    public function getTopicArn(): string
+    /**
+     * @return string
+     */
+    public function getTopicArn()
     {
-        return sprintf('%s:%s-%s', config('events-to-sns.aws.base_ARN'), $this->topic, config('events-to-sns.topic.env_postfix'));
+        return sprintf(
+            '%s:%s-%s',
+            config('queue.connections.sqs-sns.base_ARN'),
+            $this->topic,
+            config('queue.connections.sqs-sns.env_postfix')
+        );
     }
 
-    protected function validateTopic(string $topic): void
+    /**
+     * @param string $topic
+     * @return void
+     * @throws TopicNotAllowedException
+     * @throws InvalidTopicFormatException
+     */
+    protected function validateTopic(string $topic)
     {
         if (self::MAX_LENGTH < strlen($topic) || preg_match(self::VALIDATION_REGEX, $topic)) {
             throw new InvalidTopicFormatException;
         }
 
-        if (!in_array($topic, (array) Config::get('events-to-sns.topic.valid'), true)) {
+        if (!in_array($topic, (array)config('queue.connections.sqs-sns.valid_topics'), true)) {
             throw new TopicNotAllowedException;
         }
     }

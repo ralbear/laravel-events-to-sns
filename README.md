@@ -1,7 +1,7 @@
 
 ## Laravel events to SNS
 
-This library allow us to send Laravel events to an SNS topic.
+This library allow us to send Laravel events to an SNS topic, and receive them through a SQS queue.
 
 ## Install
 
@@ -9,6 +9,25 @@ This library allow us to send Laravel events to an SNS topic.
 $ composer require ralbear/laravel-events-to-sns
 ```
 ## Configuration
+
+First step is create this new connection configuration in `config/queue.php`
+
+```
+'connections' => [
+    'sqs-sns' => [
+        'driver' => 'sqs-sns',
+        'key' => env('SQS_SNS_ACCESS_KEY_ID') ?? env('AWS_ACCESS_KEY_ID') ?? '',
+        'secret' => env('SQS_SNS_SECRET_ACCESS_KEY') ?? env('AWS_SECRET_ACCESS_KEY') ?? '',
+        'region' => env('SQS_SNS_DEFAULT_REGION') ?? env('AWS_DEFAULT_REGION') ?? '',
+        'base_ARN' => env('SQS_SNS_BASE_ARN') ?? '',
+        'valid_topics' => explode(',',env('SQS_SNS_VALID_TOPICS')) ?? [],
+        'prefix' => env('SQS_SNS_PREFIX') ?? env('SQS_PREFIX') ?? '',
+        'queue' => env('SQS_SNS_QUEUE') ?? env('SQS_QUEUE') ?? '',
+        'env_postfix' => env('SQS_SNS_ENV') ?? env('APP_ENV') ?? '',
+        'event_class_postfix' => 'Event'
+    ],
+]
+```
 
 ### AWS credentials
 
@@ -22,9 +41,9 @@ AWS_DEFAULT_REGION=us-west-1
 If we need specific credentials for SNS, use this env keys:
 
 ```
-AWS_SNS_ACCESS_KEY_ID=<SNS ACCESS KEY ID>
-AWS_SNS_SECRET_ACCESS_KEY=<SNS SECRET ACCESS KEY>
-AWS_SNS_DEFAULT_REGION=eu-west-1
+SQS_SNS_ACCESS_KEY_ID=<SNS ACCESS KEY ID>
+SQS_SNS_SECRET_ACCESS_KEY=<SNS SECRET ACCESS KEY>
+SQS_SNS_DEFAULT_REGION=eu-west-1
 ```
 
 ### Topics
@@ -35,31 +54,29 @@ The way this library is designed, define SNS topics based on three parts.
  
  - A: Use the env variable:
 ```
-AWS_SNS_BASE_ARN=arn:aws:sns:eu-west-1:123456789
+SQS_SNS_BASE_ARN=arn:aws:sns:eu-west-1:123456789
 ```
  - B: Defined in your event:
  ```PHP
-public function getTopic(): string
+public function getTopic()
 {
     return 'service-a-topic';
 }
 ```
-The event level topics we use, should be previously defined on `config/events-to-sns.php`:
+The event level topics we use, should be defined as a comma separated value on this env variable:
 ```
-'topic' => [
-    'valid' => [
-        'service-a-topic',
-        'service-b-topic'
-    ],
+SQS_SNS_VALID_TOPICS=service-a-topic,service-b-topic
 ```
 
- - D: Use the env variable:
+ - D: Use the env variable if need a different value than `APP_ENV`:
  ```
-AWS_SNS_TOPIC_POSTFIX=local
+SQS_SNS_ENV=local
 ```
-This `AWS_SNS_TOPIC_POSTFIX` allow us to have custom topics for each environment, if we for example generate new environments for test specific features, we can set here the feature name.
+This `SQS_SNS_ENV` allow us to have custom topics for each environment, if we for example generate new environments for test specific features, we can set here the feature name.
 
-## Example
+## Examples
+
+### Event example
 
 ```PHP
 <?php
@@ -74,16 +91,49 @@ class OrderCreatedEvent implements ShouldBeInSns
 {
     use SendToSns;
 
-    public Order $order;
+    public $order;
 
     public function __construct(Order $order)
     {
         $this->order = $order;
     }
 
-    public function getTopic(): string
+    public function uniqueId()
+    {
+        return $this->order->id;
+    }
+
+    public function getTopic()
     {
         return 'service-a-topic';
+    }
+}
+```
+
+### Run worker
+
+Run the worker:
+
+```
+$ php artisan queue:worker sqs-sns
+```
+
+### Job example
+
+```PHP
+<?php
+
+namespace App\Jobs;
+
+use Illuminate\Queue\Jobs\SqsJob;
+
+class OrderCreatedJob
+{
+    public function handle(SqsJob $job, $data)
+    {
+        //Do something nice with your $data
+        
+        $job->delete();
     }
 }
 ```
@@ -94,6 +144,9 @@ To run test:
 ```
 $ composer test
 ```
+
+## ToDo's
+- Improve tests and coverage
 
 ## License
 

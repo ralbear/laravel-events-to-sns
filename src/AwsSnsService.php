@@ -14,7 +14,7 @@ use Ralbear\EventsToSns\Model\Topic;
 
 class AwsSnsService
 {
-    protected SnsClient $client;
+    protected $client;
 
     public function __construct()
     {
@@ -25,16 +25,21 @@ class AwsSnsService
     {
         $connectionPayload = [
             'credentials' => [
-                'key'    => config('events-to-sns.aws.key'),
-                'secret' => config('events-to-sns.aws.secret'),
+                'key' => config('queue.connections.sqs-sns.key'),
+                'secret' => config('queue.connections.sqs-sns.secret'),
             ],
-            'region' => config('events-to-sns.aws.region'),
+            'region' => config('queue.connections.sqs-sns.region'),
             'version' => '2010-03-31'
         ];
 
         $this->client = new SnsClient($connectionPayload);
     }
 
+    /**
+     * @param Topic $topic
+     * @param Message $message
+     * @throws MessageCantBeSendException
+     */
     public function send(Topic $topic, Message $message): void
     {
         try {
@@ -43,7 +48,6 @@ class AwsSnsService
                 'TopicArn' => $topic->getTopicArn(),
             ]);
         } catch (SnsException $e) {
-            dd($e->getMessage());
             throw new MessageCantBeSendException($e);
         }
     }

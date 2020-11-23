@@ -8,7 +8,38 @@ namespace Ralbear\EventsToSns\Contracts;
 
 interface ShouldBeInSns
 {
-    public function getTopic(): string;
+    /**
+     * @return string
+     */
+    public function uniqueId();
 
-    public function getData(): array;
+    /**
+     * @return int
+     */
+    public function validFor();
+
+    /**
+     * @return string
+     */
+    public function getTopic();
+
+    /**
+     * @return string
+     */
+    public function getType();
+
+    /**
+     * @return string
+     */
+    public function getEnv();
+
+    /**
+     * @return array
+     */
+    public function getData();
+
+    /**
+     * @return array
+     */
+    public function getMetadata();
 }
