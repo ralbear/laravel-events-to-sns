@@ -1,3 +1,8 @@
+<p align="center">
+<a href="https://packagist.org/packages/ralbear/laravel-events-to-sns"><img src="https://img.shields.io/packagist/dt/ralbear/laravel-events-to-sns" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/ralbear/laravel-events-to-sns"><img src="https://img.shields.io/packagist/v/ralbear/laravel-events-to-sns" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/ralbear/laravel-events-to-sns"><img src="https://img.shields.io/packagist/l/ralbear/laravel-events-to-sns" alt="License"></a>
+</p>
 
 ## Laravel events to SNS
 
