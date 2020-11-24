@@ -1,3 +1,5 @@
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/ralbear/laravel-events-to-sns/docs/media/laravel_sns_sqs_laravel.png" width="800"></a></p>
+
 <p align="center">
 <a href="https://packagist.org/packages/ralbear/laravel-events-to-sns"><img src="https://img.shields.io/packagist/dt/ralbear/laravel-events-to-sns" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/ralbear/laravel-events-to-sns"><img src="https://img.shields.io/packagist/v/ralbear/laravel-events-to-sns" alt="Latest Stable Version"></a>
@@ -55,7 +57,7 @@ SQS_SNS_DEFAULT_REGION=eu-west-1
 
 The way this library is designed, define SNS topics based on three parts.
 
-![ARN topic parts](https://raw.githubusercontent.com/ralbear/laravel-events-to-sns/docs/media/arn_topic_parts.png)
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/ralbear/laravel-events-to-sns/docs/media/arn_topic_parts.png" width="800"></a></p>
  
  - A: Use the env variable:
 ```
