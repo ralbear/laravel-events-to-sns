@@ -15,6 +15,14 @@ This library allow us to send Laravel events to an SNS topic, and receive them t
 ```shell script
 $ composer require ralbear/laravel-events-to-sns
 ```
+Add the provider to `config/app.php`
+
+```
+'providers' => [
+    Ralbear\EventsToSns\EventsToSnsProvider::class
+ ]
+```
+
 ## Configuration
 
 First step is create this new connection configuration in `config/queue.php`
