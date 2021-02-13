@@ -13,7 +13,7 @@ class EventsToSnsProvider extends ServiceProvider
     /**
      * @var array
      */
-    protected $jobs;
+    protected $jobs = [];
 
     /**
      * @return void
